@@ -1,11 +1,8 @@
 package com.beyond.note.integration.refresh.file2Sql;
 
-import com.beyond.note.integration.entity.Document;
 import com.beyond.note.integration.entity.Note;
+import com.beyond.note.integration.refresh.TraceLogModel;
 import com.beyond.note.integration.repository.NoteRepository;
-import com.beyond.note.integration.repository.TraceLogRepository;
-import com.beyond.sync.datasouce.sql.TraceLog;
-import com.beyond.sync.utils.IDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandler;
@@ -13,9 +10,7 @@ import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class NoteFile2SqlMessageHandler implements MessageHandler {
@@ -24,7 +19,7 @@ public class NoteFile2SqlMessageHandler implements MessageHandler {
     private NoteRepository noteRepository;
 
     @Autowired
-    private TraceLogRepository traceLogRepository;
+    private TraceLogModel traceLogModel;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -44,15 +39,6 @@ public class NoteFile2SqlMessageHandler implements MessageHandler {
             return;
         }
         noteRepository.saveAll(notes);
-        List<TraceLog> traceLogs = notes.stream().map(x -> {
-            TraceLog traceLog = new TraceLog();
-            traceLog.setId(IDUtil.uuid());
-            traceLog.setType(Document.NOTE);
-            traceLog.setCreateTime(new Date());
-            traceLog.setOperationTime(x.getLastModifyTime());
-            traceLog.setDocumentId(x.getId());
-            return traceLog;
-        }).collect(Collectors.toList());
-        traceLogRepository.saveAll(traceLogs);
+        traceLogModel.record(notes);
     }
 }

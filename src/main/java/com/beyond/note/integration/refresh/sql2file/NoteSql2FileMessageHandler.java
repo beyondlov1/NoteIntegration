@@ -69,7 +69,9 @@ public class NoteSql2FileMessageHandler implements MessageHandler {
             }
         } else {
             // 文件不存在, 创建并更新
-            doWriteToFile(note, dataFile);
+            if ( !dataFile.exists() && !FileUtil.hasAttribute(dataFile,"metadata")){
+                doWriteToFile(note, dataFile);
+            }
         }
     }
 

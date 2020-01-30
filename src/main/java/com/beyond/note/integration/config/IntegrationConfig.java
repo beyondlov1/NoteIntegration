@@ -58,6 +58,15 @@ public class IntegrationConfig {
     }
 
     @Bean
+    public IntegrationFlow noteDeleteFile2SqlIntegrationFlow(MessageSource<List<String>> noteDeleteFile2SqlMessageSource,
+                                                       MessageHandler noteDeleteFile2SqlMessageHandler) {
+        return IntegrationFlows.from(noteDeleteFile2SqlMessageSource, e -> e.poller(Pollers.fixedDelay(2000)))
+                .transform(List.class, source -> source)
+                .handle(noteDeleteFile2SqlMessageHandler)
+                .get();
+    }
+
+    @Bean
     public Synchronizer<Note> noteSynchronizer(List<MultiDataSource<Note>> noteDataSources,
                                                ExecutorService executorService,
                                                SyncStateManager syncStateManager,

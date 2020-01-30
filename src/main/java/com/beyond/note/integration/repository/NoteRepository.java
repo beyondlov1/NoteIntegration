@@ -8,4 +8,6 @@ import java.util.List;
 public interface NoteRepository extends JpaRepository<Note, String> {
 
     List<Note> findAllByValid(boolean valid);
+
+    List<Note> findAllByIdInAndValid(List<String> ids, boolean valid);
 }
