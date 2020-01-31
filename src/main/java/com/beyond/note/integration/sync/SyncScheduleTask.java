@@ -14,7 +14,7 @@ public class SyncScheduleTask {
         this.noteSynchronizer = noteSynchronizer;
     }
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 1000*60*10)
     public void sync() throws Exception {
         noteSynchronizer.sync();
     }

@@ -41,7 +41,7 @@ public class IntegrationConfig {
     @Bean
     public IntegrationFlow noteSql2FileIntegrationFlow(MessageSource<List<Note>> noteSql2FileMessageSource,
                                                        MessageHandler noteSql2FileMessageHandler) {
-        return IntegrationFlows.from(noteSql2FileMessageSource, e -> e.poller(Pollers.fixedDelay(2000)))
+        return IntegrationFlows.from(noteSql2FileMessageSource, e -> e.poller(Pollers.fixedDelay(10000)))
                 .transform(List.class, source -> source)
                 .handle(noteSql2FileMessageHandler)
                 .get();
@@ -51,7 +51,7 @@ public class IntegrationConfig {
     @Bean
     public IntegrationFlow noteFile2SqlIntegrationFlow(MessageSource<List<Note>> noteFile2SqlMessageSource,
                                                        MessageHandler noteFile2SqlMessageHandler) {
-        return IntegrationFlows.from(noteFile2SqlMessageSource, e -> e.poller(Pollers.fixedDelay(2000)))
+        return IntegrationFlows.from(noteFile2SqlMessageSource, e -> e.poller(Pollers.fixedDelay(10000)))
                 .transform(List.class, source -> source)
                 .handle(noteFile2SqlMessageHandler)
                 .get();

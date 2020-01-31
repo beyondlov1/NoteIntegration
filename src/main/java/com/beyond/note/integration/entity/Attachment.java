@@ -1,8 +1,13 @@
 package com.beyond.note.integration.entity;
 
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Attachment {
 
+    @Id
     private String id;
     private String noteId;
     private String name;

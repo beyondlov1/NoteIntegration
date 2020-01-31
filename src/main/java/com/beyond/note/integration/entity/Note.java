@@ -4,10 +4,10 @@ package com.beyond.note.integration.entity;
 import com.beyond.note.integration.constant.DocumentConst;
 import com.beyond.sync.utils.IDUtil;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Note extends Document {
@@ -36,6 +36,8 @@ public class Note extends Document {
     private Integer readFlag = DocumentConst.READ_FLAG_NORMAL;
     private Integer priority = DocumentConst.PRIORITY_DEFAULT;
     private Boolean valid = true;
+    @OneToMany(mappedBy = "noteId",fetch = FetchType.EAGER)
+    private List<Attachment> attachments = Collections.emptyList();
 
     @Override
     public String getId() {
@@ -135,6 +137,14 @@ public class Note extends Document {
     @Override
     public void setValid(Boolean valid) {
         this.valid = valid;
+    }
+
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
     }
 
     @Override
