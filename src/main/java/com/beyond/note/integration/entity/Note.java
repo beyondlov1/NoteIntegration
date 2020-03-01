@@ -3,8 +3,11 @@ package com.beyond.note.integration.entity;
 
 import com.beyond.note.integration.constant.DocumentConst;
 import com.beyond.sync.utils.IDUtil;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -36,8 +39,10 @@ public class Note extends Document {
     private Integer readFlag = DocumentConst.READ_FLAG_NORMAL;
     private Integer priority = DocumentConst.PRIORITY_DEFAULT;
     private Boolean valid = true;
-    @OneToMany(mappedBy = "noteId",fetch = FetchType.EAGER)
-    private List<Attachment> attachments = Collections.emptyList();
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST, targetEntity = Attachment.class)
+    @JoinColumn(name="note_id",foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @NotFound(action=NotFoundAction.IGNORE)
+    private List<Attachment> attachments = new ArrayList<>();
 
     @Override
     public String getId() {

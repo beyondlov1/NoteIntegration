@@ -1,18 +1,27 @@
 package com.beyond.note.integration.entity;
 
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
+import javax.persistence.*;
+import java.util.Objects;
+
 
 @Entity
 public class Attachment {
 
     @Id
     private String id;
-    private String noteId;
     private String name;
     private String type;
     private String path;
+    @Transient
+    private String noteId;
+    @ManyToOne(fetch= FetchType.LAZY,targetEntity=Note.class)
+    @JoinColumn(name="note_id",foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @NotFound(action= NotFoundAction.IGNORE)
+    private Note note;
 
     public String getId() {
         return id;
@@ -46,6 +55,15 @@ public class Attachment {
         this.path = path;
     }
 
+
+    public Note getNote() {
+        return note;
+    }
+
+    public void setNote(Note note) {
+        this.note = note;
+    }
+
     public String getNoteId() {
         return noteId;
     }
@@ -54,27 +72,32 @@ public class Attachment {
         this.noteId = noteId;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Attachment that = (Attachment) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (noteId != null ? !noteId.equals(that.noteId) : that.noteId != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (type != null ? !type.equals(that.type) : that.type != null) return false;
-        return path != null ? path.equals(that.path) : that.path == null;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(path, that.path) &&
+                Objects.equals(noteId, that.noteId);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (noteId != null ? noteId.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        result = 31 * result + (path != null ? path.hashCode() : 0);
-        return result;
+        return Objects.hash(id, name, type, path, noteId);
+    }
+
+    @Override
+    public String toString() {
+        return "Attachment{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", path='" + path + '\'' +
+                ", noteId='" + noteId + '\'' +
+                '}';
     }
 }

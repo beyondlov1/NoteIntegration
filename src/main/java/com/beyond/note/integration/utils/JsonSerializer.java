@@ -1,11 +1,9 @@
 package com.beyond.note.integration.utils;
 
 
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
 import com.beyond.sync.entity.Traceable;
-
-import java.lang.reflect.Type;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author: beyond
@@ -15,6 +13,7 @@ import java.lang.reflect.Type;
 public class JsonSerializer<T extends Traceable> implements Serializer<String, T> {
 
     private Class<T> clazz;
+    private ObjectMapper objectMapper;
 
     public JsonSerializer(Class<T> clazz) {
         this.clazz = clazz;
@@ -22,7 +21,12 @@ public class JsonSerializer<T extends Traceable> implements Serializer<String, T
 
     @Override
     public String encode(T t) {
-        return JSONObject.toJSONString(t);
+        try {
+            return objectMapper.writeValueAsString(t);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -31,8 +35,9 @@ public class JsonSerializer<T extends Traceable> implements Serializer<String, T
             return null;
         }
         try {
-            return JSONObject.parseObject(s, (Type) clazz);
-        } catch (JSONException e) {
+            return objectMapper.readValue(s, clazz);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
             return null;
         }
     }

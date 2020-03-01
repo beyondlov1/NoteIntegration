@@ -23,7 +23,9 @@ public class VirtualKeyManager implements InitializingBean {
         if (keyFile.exists()){
             key = FileUtils.readFileToString(keyFile, Charset.defaultCharset());
         }else {
-            FileUtils.writeStringToFile(keyFile, IDUtil.uuid(),Charset.defaultCharset());
+            String uuid = IDUtil.uuid();
+            FileUtils.writeStringToFile(keyFile, uuid,Charset.defaultCharset());
+            key = uuid;
         }
     }
 }
